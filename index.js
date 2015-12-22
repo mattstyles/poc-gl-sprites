@@ -1,20 +1,28 @@
 
-var gl = require( 'webgl-context' )()
-
+var Context = require( 'webgl-context' )
 var Loop = require( 'canvas-loop' )
 var Shader = require( 'gl-basic-shader' )
 var SpriteBatch = require( 'gl-sprite-batch' )
 var Texture = require( 'gl-texture2d' )
+var Quay = require( 'quay' )
 
 var baboon = require( 'baboon-image' )
 var mat4 = require( 'gl-mat4')
 
+var quay = new Quay()
 
-var canvas = gl.canvas
+
+var canvas = document.createElement( 'canvas' )
 document.body.appendChild( canvas )
 
 var app = Loop( canvas, {
   scale: window.devicePixelRatio
+})
+
+var gl = Context({
+  canvas: canvas,
+  width: app.shape[ 0 ],
+  height: app.shape[ 1 ]
 })
 
 app.start()
@@ -38,6 +46,24 @@ var ortho = mat4.create()
 var width = app.shape[ 0 ]
 var height = app.shape[ 1 ]
 
+var sprite = {
+  position: [ 0, 0 ],
+  size: [ 128, 128 ]
+}
+
+quay.on( '<up>', () => sprite.position[ 1 ]-- )
+quay.on( '<down>', () => sprite.position[ 1 ]++ )
+quay.on( '<left>', () => sprite.position[ 0 ]-- )
+quay.on( '<right>', () => sprite.position[ 0 ]++ )
+quay.on( 'Q', () => {
+  sprite.size[ 0 ] += 10
+  sprite.size[ 1 ] += 10
+})
+quay.on( 'A', () => {
+  sprite.size[ 0 ] -= 10
+  sprite.size[ 1 ] -= 10
+})
+
 function render( dt ) {
 
   gl.enable( gl.BLEND )
@@ -53,8 +79,8 @@ function render( dt ) {
   batch.bind( shader )
 
   batch.push({
-    position: [ 0, 0 ],
-    shape: [ 128, 128 ],
+    position: sprite.position,
+    shape: sprite.size,
     color: [ 1, 1, 1, 1 ],
     texture: texture
   })
@@ -68,3 +94,4 @@ function render( dt ) {
 //debug
 window.app = app
 window.gl = gl
+window.sprite = sprite
