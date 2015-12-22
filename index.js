@@ -5,13 +5,23 @@ var Shader = require( 'gl-basic-shader' )
 var SpriteBatch = require( 'gl-sprite-batch' )
 var Texture = require( 'gl-texture2d' )
 var Quay = require( 'quay' )
+var Stats = require( 'stats.js' )
 
 var baboon = require( 'baboon-image' )
 var mat4 = require( 'gl-mat4')
 var random = require( 'lodash.random' )
 
+var stats = new Stats()
+Object.assign( stats.domElement.style, {
+  position: 'absolute',
+  right: '0px',
+  top: '0px',
+  zIndex: 1000
+})
+document.body.appendChild( stats.domElement )
 
-const MAX_SPRITES = 100
+const MAX_SPRITES = 10000
+const START_SPRITES = 1000
 
 var canvas = document.createElement( 'canvas' )
 document.body.appendChild( canvas )
@@ -28,7 +38,11 @@ var gl = Context({
 
 app.start()
 
-app.on( 'tick', render )
+app.on( 'tick', dt => {
+  stats.begin()
+  render( dt )
+  stats.end()
+})
 
 var shader = Shader( gl, {
   texcoord: true,
@@ -69,7 +83,7 @@ function randomSprite() {
   return spr
 }
 
-for ( let i = 0; i < MAX_SPRITES - 1; i++ ) {
+for ( let i = 0; i < START_SPRITES - 1; i++ ) {
   sprites.push( randomSprite() )
 }
 
@@ -93,7 +107,9 @@ quay.on( 'A', () => {
 
 quay.stream( '<space>' )
   .on( 'data', event => {
-    sprites.push( randomSprite() )
+    for ( var i = 0; i < 20; i++ ) {
+      sprites.push( randomSprite() )
+    }
   })
   .on( 'keyup', event => {
     console.log( sprites.length )
@@ -109,6 +125,8 @@ function render( dt ) {
    */
   gl.enable( gl.BLEND )
   gl.blendFunc( gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA )
+  gl.disable(gl.DEPTH_TEST)
+  gl.disable(gl.CULL_FACE)
 
   shader.bind()
   shader.uniforms.texture0 = 0
