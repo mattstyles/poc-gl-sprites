@@ -1,7 +1,7 @@
 {
-  "name": "sprite",
+  "name": "poc-gl-sprites",
   "version": "1.0.0",
-  "description": "",
+  "description": "Playing around with stackgl sprite stuff",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +13,7 @@
       "glslify"
     ]
   },
-  "author": "Matt Styles <matt@veryfizzyjelly.com> (http://github.com/mattstyles)",
+  "author": "Matt Styles",
   "license": "ISC",
   "dependencies": {
     "canvas-loop": "^1.0.7",
