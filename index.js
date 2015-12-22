@@ -91,6 +91,14 @@ quay.on( 'A', () => {
   sprite.size[ 1 ] -= 10
 })
 
+quay.stream( '<space>' )
+  .on( 'data', event => {
+    sprites.push( randomSprite() )
+  })
+  .on( 'keyup', event => {
+    console.log( sprites.length )
+  })
+
 /**
  * Rendering
  */
@@ -114,14 +122,7 @@ function render( dt ) {
   batch.clear()
   batch.bind( shader )
 
-  batch.push({
-    position: sprite.position,
-    shape: sprite.size,
-    color: [ 1, 1, 1, 1 ],
-    texture: texture
-  })
-
-  for ( let i = 0; i < MAX_SPRITES - 1; i++ ) {
+  for ( let i = 0; i < sprites.length; i++ ) {
     let spr = sprites[ i ]
     batch.push({
       position: spr.position,
@@ -130,6 +131,13 @@ function render( dt ) {
       texture: texture
     })
   }
+
+  batch.push({
+    position: sprite.position,
+    shape: sprite.size,
+    color: [ 1, 1, 1, 1 ],
+    texture: texture
+  })
 
   batch.draw()
 
