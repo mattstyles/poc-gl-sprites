@@ -7,6 +7,7 @@ var Texture = require( 'gl-texture2d' )
 var Quay = require( 'quay' )
 
 var baboon = require( 'baboon-image' )
+var bunny = require( './bunny' )
 var mat4 = require( 'gl-mat4')
 var random = require( 'lodash.random' )
 

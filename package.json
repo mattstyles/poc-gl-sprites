@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "budo index.js --live"
+    "start": "budo index.js --live",
+    "image": "ndpack-image bunny.png > bunny.js"
   },
   "browserify": {
     "transform": [
@@ -32,6 +33,7 @@
     "browserify": "^12.0.1",
     "budo": "^7.1.0",
     "glslify": "^5.0.0",
+    "ndpack-image": "^2.0.0",
     "watchify": "^3.6.1"
   }
 }
