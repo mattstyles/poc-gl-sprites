@@ -25,6 +25,7 @@
     "gl-texture2d": "^2.0.10",
     "lodash.random": "^3.0.1",
     "quay": "^0.3.0",
+    "stats.js": "github:mrdoob/stats.js",
     "webgl-context": "^2.2.0"
   },
   "devDependencies": {
