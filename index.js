@@ -56,7 +56,8 @@ var batch = SpriteBatch( gl, {
   capacity: MAX_SPRITES   // default 100
 })
 
-var texture = Texture( gl, baboon )
+// var texture = Texture( gl, baboon )
+var texture = Texture( gl, bunny )
 
 var ortho = mat4.create()
 var width = app.shape[ 0 ]
@@ -66,8 +67,29 @@ var height = app.shape[ 1 ]
 class Sprite {
   constructor() {
     this.position = [ 0, 0 ]
-    this.size = [ 128, 128 ]
+    this.size = [ 32, 32 ]
     this.alpha = 1
+
+    this.force = [ random( -2.1, 2.1 ), random( -2.1, 2.1 ) ]
+  }
+
+  update() {
+    this.position[ 0 ] += this.force[ 0 ]
+    this.position[ 1 ] += this.force[ 1 ]
+
+    if ( this.position[ 1 ] > app.shape[ 1 ] ) {
+      this.force[ 1 ] = 0 - this.force[ 1 ]
+    }
+    if ( this.position[ 1 ] < 0 ) {
+      this.force[ 1 ] = 0 - this.force[ 1 ]
+    }
+
+    if ( this.position[ 0 ] > app.shape[ 0 ] ) {
+      this.force[ 0 ] = 0 - this.force[ 0 ]
+    }
+    if ( this.position[ 0 ] < 0 ) {
+      this.force[ 0 ] = 0 - this.force[ 0 ]
+    }
   }
 }
 
@@ -78,9 +100,9 @@ function randomSprite() {
   let spr = new Sprite()
   spr.position[ 0 ] = random( 0, width )
   spr.position[ 1 ] = random( 0, height )
-  spr.size[ 0 ] += random( -64, 128 )
-  spr.size[ 1 ] += random( -64, 128 )
-  spr.alpha = random( .25, 1, true )
+  // spr.size[ 0 ] += random( -64, 128 )
+  // spr.size[ 1 ] += random( -64, 128 )
+  // spr.alpha = random( .25, 1, true )
   return spr
 }
 
@@ -108,7 +130,7 @@ quay.on( 'A', () => {
 
 quay.stream( '<space>' )
   .on( 'data', event => {
-    for ( var i = 0; i < 20; i++ ) {
+    for ( var i = 0; i < 200; i++ ) {
       sprites.push( randomSprite() )
     }
   })
@@ -141,22 +163,29 @@ function render( dt ) {
   batch.clear()
   batch.bind( shader )
 
+  batch.shape = [ 32, 32 ]
+  batch.color = [ 1, 1, 1, 1 ]
+  batch.texture = texture
+
   for ( let i = 0; i < sprites.length; i++ ) {
     let spr = sprites[ i ]
-    batch.push({
-      position: spr.position,
-      shape: spr.size,
-      color: [ 1, 1, 1, spr.alpha ],
-      texture: texture
-    })
+    // batch.push({
+    //   position: spr.position,
+    //   shape: spr.size,
+    //   color: [ 1, 1, 1, spr.alpha ],
+    //   texture: texture
+    // })
+    batch.position = spr.position
+    batch.push()
+    spr.update()
   }
 
-  batch.push({
-    position: sprite.position,
-    shape: sprite.size,
-    color: [ 1, 1, 1, 1 ],
-    texture: texture
-  })
+  // batch.push({
+  //   position: sprite.position,
+  //   shape: sprite.size,
+  //   color: [ 1, 1, 1, 1 ],
+  //   texture: texture
+  // })
 
   batch.draw()
 
@@ -168,3 +197,4 @@ function render( dt ) {
 window.app = app
 window.gl = gl
 window.sprite = sprite
+window.sprites = sprites
