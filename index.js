@@ -7,7 +7,7 @@ var Texture = require( 'gl-texture2d' )
 var Quay = require( 'quay' )
 var Stats = require( 'stats.js' )
 
-var baboon = require( 'baboon-image' )
+// var baboon = require( 'baboon-image' )
 var bunny = require( './bunny' )
 var mat4 = require( 'gl-mat4')
 var random = require( 'lodash.random' )
@@ -23,6 +23,7 @@ document.body.appendChild( stats.domElement )
 
 const MAX_SPRITES = 10000
 const START_SPRITES = 1000
+const ADD_SPRITES = 400
 
 var canvas = document.createElement( 'canvas' )
 document.body.appendChild( canvas )
@@ -67,7 +68,7 @@ var height = app.shape[ 1 ]
 class Sprite {
   constructor() {
     this.position = [ 0, 0 ]
-    this.size = [ 32, 32 ]
+    this.shape = [ 32, 32 ]
     this.alpha = 1
 
     this.force = [ random( -2.1, 2.1 ), random( -2.1, 2.1 ) ]
@@ -100,9 +101,10 @@ function randomSprite() {
   let spr = new Sprite()
   spr.position[ 0 ] = random( 0, width )
   spr.position[ 1 ] = random( 0, height )
-  // spr.size[ 0 ] += random( -64, 128 )
-  // spr.size[ 1 ] += random( -64, 128 )
-  // spr.alpha = random( .25, 1, true )
+  let scale = random( 16, 32 )
+  spr.shape[ 0 ] = scale
+  spr.shape[ 1 ] = scale
+  spr.alpha = random( .25, 1, true )
   return spr
 }
 
@@ -130,7 +132,7 @@ quay.on( 'A', () => {
 
 quay.stream( '<space>' )
   .on( 'data', event => {
-    for ( var i = 0; i < 200; i++ ) {
+    for ( var i = 0; i < ADD_SPRITES; i++ ) {
       sprites.push( randomSprite() )
     }
   })
@@ -151,6 +153,8 @@ function render( dt ) {
   gl.disable(gl.DEPTH_TEST)
   gl.disable(gl.CULL_FACE)
 
+  batch.premultiplied = true
+
   shader.bind()
   shader.uniforms.texture0 = 0
 
@@ -163,19 +167,15 @@ function render( dt ) {
   batch.clear()
   batch.bind( shader )
 
-  batch.shape = [ 32, 32 ]
-  batch.color = [ 1, 1, 1, 1 ]
+  // batch.shape = [ 32, 32 ]
+  // batch.color = [ 1, 1, 1, 1 ]
   batch.texture = texture
 
   for ( let i = 0; i < sprites.length; i++ ) {
     let spr = sprites[ i ]
-    // batch.push({
-    //   position: spr.position,
-    //   shape: spr.size,
-    //   color: [ 1, 1, 1, spr.alpha ],
-    //   texture: texture
-    // })
     batch.position = spr.position
+    batch.shape = spr.shape
+    batch.color = [ 1, 1, 1, spr.alpha ]
     batch.push()
     spr.update()
   }

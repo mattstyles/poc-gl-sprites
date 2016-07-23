@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "budo index.js --live",
-    "image": "ndpack-image bunny.png > bunny.js"
+    "image": "ndpack-image bunny2.png > bunny2.js",
+    "build": "browserify -t babelify index.js | uglifyjs --compress --mangle > bundle.js"
   },
   "browserify": {
     "transform": [
@@ -35,6 +36,7 @@
     "budo": "^7.1.0",
     "glslify": "^5.0.0",
     "ndpack-image": "^2.0.0",
+    "uglifyjs": "^2.4.10",
     "watchify": "^3.6.1"
   }
 }
